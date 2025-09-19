@@ -1,0 +1,106 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #fafafa;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  overflow-x: hidden;
+}
+
+/* Header */
+header {
+  background: linear-gradient(90deg, #ff80ab, #ffeb3b, #82b1ff);
+  color: #333;
+  font-size: 2rem;
+  padding: 20px;
+  font-weight: bold;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Overlay intro screen */
+#overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.85);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  cursor: pointer;
+}
+
+#overlay h1 {
+  font-size: 3rem;
+  margin: 0 0 20px;
+  animation: pulse 2s infinite;
+}
+
+#overlay p {
+  font-size: 1.2rem;
+  opacity: 0.8;
+}
+
+@keyframes pulse {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* Masonry-style wall */
+.masonry {
+  column-count: 3;
+  column-gap: 20px;
+  padding: 20px;
+}
+@media (max-width: 900px) { .masonry { column-count: 2; } }
+@media (max-width: 600px) { .masonry { column-count: 1; } }
+
+/* Card (note) */
+.note {
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 20px;
+  cursor: pointer;
+  break-inside: avoid;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+  background: #fff;
+  transition: transform 0.3s ease;
+}
+.note:hover {
+  transform: scale(1.03);
+}
+.note img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+.note p {
+  padding: 10px;
+  font-size: 1rem;
+  color: #333;
+  margin: 0;
+  text-align: center;
+}
+
+/* Confetti */
+.confetti {
+  position: fixed;
+  top: -10px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  animation: fall linear forwards;
+  z-index: 1000;
+}
+@keyframes fall {
+  to {
+    transform: translateY(100vh) rotate(720deg);
+  }
+}
