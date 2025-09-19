@@ -1,66 +1,42 @@
-// Load wishes from JSON, preload images, then display
+// Load wishes from JSON
 async function loadWishes() {
   try {
-    const wall = document.getElementById("wish-wall");
-    wall.innerHTML = "<p>⏳ Loading wishes...</p>";
-
     const res = await fetch("wishes.json?nocache=" + Date.now());
-    if (!res.ok) throw new Error("Failed to fetch wishes.json");
     const wishes = await res.json();
-
-    // Preload images
-    const preloadPromises = wishes.map(wish => {
-      return new Promise(resolve => {
-        const img = new Image();
-        img.src = wish.photo;
-        img.onload = () => resolve({ ...wish, valid: true });
-        img.onerror = () => resolve({ ...wish, valid: false });
-      });
-    });
-
-    // Wait until all preloads finish
-    const results = await Promise.all(preloadPromises);
-
-    // Clear loading message
+    const wall = document.getElementById("wish-wall");
     wall.innerHTML = "";
 
-    // Render cards
-    results.forEach(wish => {
+    wishes.forEach(wish => {
       const note = document.createElement("div");
       note.className = "note";
 
-      const photoSrc = wish.valid
-        ? wish.photo
-        : "https://via.placeholder.com/300x200?text=No+Image";
-
+      // Photo + message below
       note.innerHTML = `
-        <img src="${photoSrc}" alt="${wish.name}" loading="lazy">
-        <p><strong>${wish.name}:</strong> ${wish.message}</p>
+        <img src="${wish.photo}" alt="${wish.name}" 
+             onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+        <p>${wish.message}</p>
       `;
 
       wall.appendChild(note);
     });
-
-    console.log("✅ Wishes loaded:", results);
-
   } catch (err) {
-    console.error("❌ Error in loadWishes:", err);
-    const wall = document.getElementById("wish-wall");
-    wall.innerHTML = "<p style='color:red;'>Failed to load wishes.</p>";
+    console.error("Error loading wishes.json", err);
   }
 }
 
-// Confetti animation
+// Confetti
 function dropConfetti(amount = 25) {
   for (let i = 0; i < amount; i++) {
     const c = document.createElement("div");
     c.className = "confetti";
     c.style.left = Math.random() * 100 + "vw";
     c.style.backgroundColor = [
-      "#ff4081", "#ffd740", "#69f0ae", "#40c4ff"
+      "#ff4081",
+      "#ffd740",
+      "#69f0ae",
+      "#40c4ff"
     ][Math.floor(Math.random() * 4)];
     c.style.animationDuration = (2 + Math.random() * 3) + "s";
-
     document.body.appendChild(c);
     setTimeout(() => c.remove(), 5000);
   }
