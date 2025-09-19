@@ -1,12 +1,14 @@
 // Load wishes from JSON, preload images, then display
 async function loadWishes() {
   try {
-    const res = await fetch("wishes.json?nocache=" + Date.now());
-    const wishes = await res.json();
     const wall = document.getElementById("wish-wall");
-    wall.innerHTML = "";
+    wall.innerHTML = "<p>⏳ Loading wishes...</p>";
 
-    // 🔥 Step 1: Preload images
+    const res = await fetch("wishes.json?nocache=" + Date.now());
+    if (!res.ok) throw new Error("Failed to fetch wishes.json");
+    const wishes = await res.json();
+
+    // Preload images
     const preloadPromises = wishes.map(wish => {
       return new Promise(resolve => {
         const img = new Image();
@@ -19,7 +21,10 @@ async function loadWishes() {
     // Wait until all preloads finish
     const results = await Promise.all(preloadPromises);
 
-    // 🔥 Step 2: Render instantly from cache
+    // Clear loading message
+    wall.innerHTML = "";
+
+    // Render cards
     results.forEach(wish => {
       const note = document.createElement("div");
       note.className = "note";
@@ -36,8 +41,12 @@ async function loadWishes() {
       wall.appendChild(note);
     });
 
+    console.log("✅ Wishes loaded:", results);
+
   } catch (err) {
-    console.error("Error loading wishes.json", err);
+    console.error("❌ Error in loadWishes:", err);
+    const wall = document.getElementById("wish-wall");
+    wall.innerHTML = "<p style='color:red;'>Failed to load wishes.</p>";
   }
 }
 
